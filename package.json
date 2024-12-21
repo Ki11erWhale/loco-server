@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/src/index.js",
   "scripts": {
-    "start": "pm2 start dist/index.js",
+    "start": "pm2 start dist/index.js -i 0",
     "dev": "nodemon src/index.ts",
     "build": "tsc"
   },
