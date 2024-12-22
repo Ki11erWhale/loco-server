@@ -70,4 +70,21 @@ authRouter.post('/logout', (req, res) => {
   res.status(200).json({ success: true, message: 'Logout succeed.' });
 });
 
+authRouter.post('/is-running', (req, res) => {
+  const { email, token } = req.body;
+
+  if (!email || !token) {
+    res.status(400).json({ success: false, message: 'Invalid request.' });
+    return;
+  }
+
+  if (!clientManager.getClient(email, token)) {
+    res.status(200).json({ isRunning: false });
+    return;
+  }
+
+  res.status(200).json({ isRunning: true });
+  return;
+});
+
 export { authRouter };

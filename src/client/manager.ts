@@ -10,6 +10,16 @@ export class ClientManager {
     this.clients = new Map();
   }
 
+  getClient(email: string, token: string) {
+    const clientData = this.clients.get(email);
+
+    if (!clientData || clientData.token !== token) {
+      return null;
+    }
+
+    return clientData;
+  }
+
   registerClient(
     userInfo: UserInfo,
     commandConf: CommandConf
@@ -32,11 +42,9 @@ export class ClientManager {
   }
 
   removeClient(email: string, token: string): boolean {
-    const clientData = this.clients.get(email);
+    const clientData = this.getClient(email, token);
 
-    if (!clientData || clientData.token !== token) {
-      return false;
-    }
+    if (!clientData) return false;
 
     if (clientData.commandClient.client.logon) {
       clientData.commandClient.client.close();
