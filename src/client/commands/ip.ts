@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { ChatBuilder, KnownChatType } from 'loco-client';
 import { Command } from '../../types/command';
 import { delay } from '../../utils';
@@ -9,12 +10,13 @@ export const startIpLogging: Command = {
 
   execute: async (client, data, channel) => {
     const id = channel.channelId.toString();
-    if (ipLoggerService.getChannel(id)) {
+    if (ipLoggerService.getLogger(id)) {
       channel.sendChat('이미 아이피 주소를 로깅하고 있습니다.');
       return;
     }
 
-    ipLoggerService.addLogger(id, channel);
+    const seed = crypto.randomBytes(8).toString('hex');
+    ipLoggerService.addLogger(id, channel, seed);
 
     channel.sendChat('아이피 주소 로깅을 시작합니다.');
 
@@ -33,7 +35,7 @@ export const startIpLogging: Command = {
             '${kakao_link_pc_url}': '',
             '${kakao_link_image_width}': '339',
             '${kakao_link_image_height}': '339',
-            '${kakao_link_image_src}': `http://13.209.20.54/features/ip-logger/${id}`,
+            '${kakao_link_image_src}': `http://13.209.20.54/features/ip-logger/${id}-${seed}`,
             '${kakao_link_name}': '',
           },
           'extras': {
@@ -51,7 +53,7 @@ export const stopIpLogging: Command = {
 
   execute: async (client, data, channel) => {
     const id = channel.channelId.toString();
-    if (!ipLoggerService.getChannel(id)) {
+    if (!ipLoggerService.getLogger(id)) {
       channel.sendChat('아이피 주소 로깅중이 아닙니다.');
       return;
     }
