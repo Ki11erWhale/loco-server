@@ -10,13 +10,13 @@ export const startIpLogging: Command = {
 
   execute: async (client, data, channel) => {
     const id = channel.channelId.toString();
-    if (ipLoggerService.getLogger(id)) {
+    if (ipLoggerService.getChannel(id)) {
       channel.sendChat('이미 아이피 주소를 로깅하고 있습니다.');
       return;
     }
 
     const seed = crypto.randomBytes(8).toString('hex');
-    ipLoggerService.addLogger(id, channel, seed);
+    ipLoggerService.addLogger(id, channel);
 
     channel.sendChat('아이피 주소 로깅을 시작합니다.');
 
@@ -53,7 +53,7 @@ export const stopIpLogging: Command = {
 
   execute: async (client, data, channel) => {
     const id = channel.channelId.toString();
-    if (!ipLoggerService.getLogger(id)) {
+    if (!ipLoggerService.getChannel(id)) {
       channel.sendChat('아이피 주소 로깅중이 아닙니다.');
       return;
     }

