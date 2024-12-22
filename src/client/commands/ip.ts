@@ -9,7 +9,7 @@ export const startIpLogging: Command = {
   description: '아이피 주소 로깅을 시작합니다.',
 
   execute: async (_, data, channel) => {
-    const id = randomBytes(length).toString('hex');
+    const id = randomBytes(8).toString('hex');
 
     setLoggerMap(id, channel);
 
