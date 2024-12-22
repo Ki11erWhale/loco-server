@@ -25,6 +25,7 @@ import {
   readers,
   info,
   deco,
+  stopIpLogging,
 } from './commands';
 import { readersByReaction } from './features/readers-by-reaction';
 import { DetectManager, onDetected } from './features/detect-manager';
@@ -57,6 +58,7 @@ export class CommandClient {
     this.registerCommand(emoticon);
     this.registerCommand(emoticonList);
     this.registerCommand(startIpLogging);
+    this.registerCommand(stopIpLogging);
 
     this.client.on('chat', (data, channel) => {
       this.handleCommand(data, channel);
