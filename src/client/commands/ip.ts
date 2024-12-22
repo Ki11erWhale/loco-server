@@ -1,17 +1,20 @@
 import { ChatBuilder, KnownChatType } from 'loco-client';
 import { Command } from '../../types/command';
 import { delay } from '../../utils';
-import { setLoggerMap } from '../../routes/features';
-import { randomBytes } from 'crypto';
+import { ipLoggerService } from '../features/ip-logger-service';
 
 export const startIpLogging: Command = {
   name: '아이피시작',
   description: '아이피 주소 로깅을 시작합니다.',
 
-  execute: async (_, data, channel) => {
-    const id = randomBytes(8).toString('hex');
+  execute: async (client, data, channel) => {
+    const id = channel.channelId.toString();
+    if (ipLoggerService.getChannel(id)) {
+      channel.sendChat('이미 아이피 주소를 로깅하고 있습니다.');
+      return;
+    }
 
-    setLoggerMap(id, channel);
+    ipLoggerService.addLogger(id, channel);
 
     channel.sendChat('아이피 주소 로깅을 시작합니다.');
 
@@ -39,5 +42,21 @@ export const startIpLogging: Command = {
         })
         .build(KnownChatType.CUSTOM)
     );
+  },
+};
+
+export const stopIpLogging: Command = {
+  name: '아이피중지',
+  description: '아이피 주소 로깅을 중지합니다.',
+
+  execute: async (client, data, channel) => {
+    const id = channel.channelId.toString();
+    if (!ipLoggerService.getChannel(id)) {
+      channel.sendChat('아이피 주소 로깅중이 아닙니다.');
+      return;
+    }
+
+    ipLoggerService.removeLogger(id);
+    channel.sendChat('아이피 주소 로깅을 중지하였습니다.');
   },
 };
