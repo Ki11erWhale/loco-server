@@ -4,8 +4,6 @@ import { ipLoggerService } from '../client/features/ip-logger-service';
 const featuresRouter = express.Router();
 
 featuresRouter.get('/ip-logger/:id', (req, res) => {
-  console.log(req.headers);
-
   const id = req.params.id;
   const ip = (
     req.ip ??
