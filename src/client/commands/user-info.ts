@@ -4,6 +4,7 @@ import { Command } from '../../types/command';
 export const info: Command = {
   name: '정보',
   description: '사용법: 정보 <멘션>\n멘션한 사용자의 정보를 출력합니다.',
+  requiresAdmin: true,
 
   execute: (_, data, channel) => {
     const mentioned = data.mentions?.[0];

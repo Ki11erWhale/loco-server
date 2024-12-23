@@ -4,6 +4,8 @@ import { Command } from '../../types/command';
 export const mentionAll: Command = {
   name: '모두멘션',
   description: '채팅방에 있는 모든 사람을 멘션합니다.',
+  requiresAdmin: true,
+
   execute: (_, data, channel) => {
     const userList = Array.from(channel.getAllUserInfo());
     const maxMentions = 15;

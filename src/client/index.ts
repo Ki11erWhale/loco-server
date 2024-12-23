@@ -26,6 +26,9 @@ import {
   info,
   deco,
   stopIpLogging,
+  addAdmin,
+  adminList,
+  verifyAdmin,
 } from './commands';
 import { readersByReaction } from './features/readers-by-reaction';
 import { DetectManager, onDetected } from './features/detect-manager';
@@ -33,6 +36,7 @@ import { DetectManager, onDetected } from './features/detect-manager';
 export class CommandClient {
   private userInfo: UserInfo;
   private commands: Command[];
+  private adminKey: string;
 
   commandConf: CommandConf;
   client: TalkClient;
@@ -44,9 +48,13 @@ export class CommandClient {
     this.commands = [];
     this.detectManager = new DetectManager();
     this.commandConf = commandConf;
+    this.adminKey = '';
 
     this.registerCommand(checkStatus);
     this.registerCommand(commandName);
+    this.registerCommand(adminList);
+    this.registerCommand(addAdmin);
+    this.registerCommand(verifyAdmin);
     this.registerCommand(clearChat);
     this.registerCommand(echo);
     this.registerCommand(info);
@@ -81,6 +89,14 @@ export class CommandClient {
     return this.commands;
   }
 
+  getAdminKey() {
+    return this.adminKey;
+  }
+
+  setAdminKey(key: string) {
+    this.adminKey = key;
+  }
+
   private handleCommand(data: TalkChatData, channel: TalkChannel) {
     const text = data.text?.trim();
     if (!text?.startsWith(this.commandConf.prefix)) return;
@@ -93,6 +109,38 @@ export class CommandClient {
     if (!registeredCommand) {
       channel.sendChat(`${commandName}는 존재하지 않는 명령어입니다.`);
       return;
+    }
+
+    if (this.commandConf.isAdminBot) {
+      const sender = data.getSenderInfo(channel);
+      if (!sender) return;
+
+      const isAdmin = this.commandConf.adminList.some((admin) =>
+        admin.userId.equals(sender.userId)
+      );
+
+      if (commandName === '관리자등록' || commandName === '관리자인증') {
+        if (isAdmin) {
+          channel.sendChat('이미 관리자에 등록되어 있습니다.');
+          return;
+        }
+      }
+
+      if (!isAdmin && registeredCommand.requiresAdmin) {
+        channel.sendChat(
+          `${commandName} 명령어는 관리자 권한이 필요합니다.\n\n'관리자등록' 명령어를 사용하여 키를 발급하세요.`
+        );
+        return;
+      }
+    } else {
+      if (
+        commandName === '관리자목록' ||
+        commandName === '관리자등록' ||
+        commandName === '관리자인증'
+      ) {
+        channel.sendChat('관리자 권한이 필요한 봇이 아닙니다.');
+        return;
+      }
     }
 
     try {

@@ -1,5 +1,7 @@
 import express from 'express';
 import { ClientManager } from '../client/manager';
+import { CommandConf } from '../types/command';
+import { Long, util } from 'loco-client';
 
 const clientManager = new ClientManager();
 
@@ -12,20 +14,50 @@ authRouter.post('/login', async (req, res) => {
     device_uuid: deviceUuid,
     device_name: deviceName,
     prefix,
+    is_admin_bot: isAdminBot,
+    admin_list: adminList,
   } = req.body;
 
-  if (!email || !password || !deviceUuid || !deviceName || !prefix) {
-    res.status(400).json({
+  if (
+    !email ||
+    !password ||
+    !deviceUuid ||
+    !deviceName ||
+    !prefix ||
+    isAdminBot === undefined
+  ) {
+    res.status(200).json({
       success: false,
       message:
-        'Please provide email, password, device_uuid, device_name, and prefix.',
+        'email, password, device_uuid, device_name, prefix, 그리고 is_admin_bot를 제공하세요.',
+    });
+
+    return;
+  }
+
+  if (isAdminBot && adminList === undefined) {
+    res.status(200).json({
+      success: false,
+      message: 'admin_list를 제공하세요.',
     });
 
     return;
   }
 
   const userInfo = { email, password, deviceUuid, deviceName };
-  const commandConf = { prefix };
+  const bsonAdminList = adminList.map((admin: any) => ({
+    ...admin,
+    userId: Long.fromBits(
+      admin.userId.low,
+      admin.userId.high,
+      admin.userId.unsigned
+    ),
+  }));
+  const commandConf: CommandConf = {
+    prefix,
+    isAdminBot,
+    adminList: bsonAdminList,
+  };
   const { token, commandClient } = clientManager.registerClient(
     userInfo,
     commandConf
@@ -36,9 +68,9 @@ authRouter.post('/login', async (req, res) => {
   if (!result.success) {
     clientManager.removeClient(email, token);
 
-    res.status(400).json({
+    res.status(200).json({
       success: false,
-      message: `Login failed. Reason: ${result.reason}`,
+      message: `로그인 실패: ${result.reason}`,
     });
 
     return;
@@ -54,7 +86,7 @@ authRouter.post('/logout', (req, res) => {
   const { email, token } = req.body;
 
   if (!email || !token) {
-    res.status(400).json({ success: false, message: 'Invalid request.' });
+    res.status(200).json({ success: false, message: '잘못된 요청입니다.' });
     return;
   }
 
@@ -62,19 +94,19 @@ authRouter.post('/logout', (req, res) => {
 
   if (!success) {
     res
-      .status(403)
-      .json({ success: false, message: 'Invalid token or email.' });
+      .status(200)
+      .json({ success: false, message: '이메일 또는 토큰이 잘못되었습니다.' });
     return;
   }
 
-  res.status(200).json({ success: true, message: 'Logout succeed.' });
+  res.status(200).json({ success: true, message: '로그아웃 성공' });
 });
 
 authRouter.post('/is-running', (req, res) => {
   const { email, token } = req.body;
 
   if (!email || !token) {
-    res.status(400).json({ success: false, message: 'Invalid request.' });
+    res.status(200).json({ success: false, message: '잘못된 요청입니다.' });
     return;
   }
 
@@ -87,4 +119,4 @@ authRouter.post('/is-running', (req, res) => {
   return;
 });
 
-export { authRouter };
+export { authRouter, clientManager };

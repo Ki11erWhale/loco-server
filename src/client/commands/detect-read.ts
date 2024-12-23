@@ -5,6 +5,8 @@ export const detectRead: Command = {
   name: '감지',
   description:
     '사용법: 감지 <멘션>\n멘션한 사용자가 채팅방의 메시지를 읽으면 바로 알려줍니다.',
+  requiresAdmin: true,
+
   execute: (client, data, channel) => {
     const mentioned = data.mentions?.[0];
     if (!mentioned) {
@@ -28,6 +30,7 @@ export const detectRead: Command = {
 export const detectList: Command = {
   name: '감지목록',
   description: '현재 감지 리스트에 등록된 사용자들을 출력합니다.',
+  requiresAdmin: true,
 
   execute: (client, data, channel) => {
     const detectList = client.detectManager.getDetectList(channel);

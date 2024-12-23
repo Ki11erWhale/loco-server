@@ -1,5 +1,5 @@
 import express from 'express';
-import { authRouter, featuresRouter } from './routes';
+import { adminRouter, authRouter, featuresRouter } from './routes';
 
 const app = express();
 
@@ -10,6 +10,9 @@ app.get('/', (req, res) => {
   res.json('loco-server');
 });
 
-app.use('/auth', authRouter).use('/features', featuresRouter);
+app
+  .use('/auth', authRouter)
+  .use('/features', featuresRouter)
+  .use('/admin', adminRouter);
 
 export default app;

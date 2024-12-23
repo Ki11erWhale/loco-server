@@ -1,3 +1,4 @@
+export * from './admin';
 export * from './check-status';
 export * from './clear-chat';
 export * from './command-names';

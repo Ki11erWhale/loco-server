@@ -43,6 +43,7 @@ const emoticons: Emoticon[] = [
 export const emoticonList: Command = {
   name: '임티목록',
   description: '사용 가능한 이모티콘 번호 목록을 출력합니다.',
+  requiresAdmin: true,
 
   execute: (_, data, channel) => {
     channel.sendChat(
@@ -68,7 +69,8 @@ export const emoticonList: Command = {
 export const emoticon: Command = {
   name: '임티',
   description:
-    '사용빕: 임티 <임티 아이디> <임티 번호> <크기(기본값: 360)>\n이모티콘을 전송합니다.\n예시: 임티 4412207 35 720',
+    '사용법: 임티 <임티 아이디> <임티 번호> <크기(기본값: 360)>\n이모티콘을 전송합니다.\n예시: 임티 4412207 35 720',
+  requiresAdmin: true,
 
   execute: (client, data, channel) => {
     const args = data.text.trim().split(' ').slice(1);

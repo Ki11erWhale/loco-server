@@ -5,6 +5,7 @@ import { delay } from '../../utils';
 export const clearChat: Command = {
   name: '채팅청소',
   description: '채팅을 청소합니다.',
+  requiresAdmin: true,
 
   execute: async (_, data, channel) => {
     channel.sendChat('채팅 청소를 시작합니다.');

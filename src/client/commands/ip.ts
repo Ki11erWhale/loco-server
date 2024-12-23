@@ -7,6 +7,7 @@ import { ipLoggerService } from '../features/ip-logger-service';
 export const startIpLogging: Command = {
   name: '아이피시작',
   description: '아이피 주소 로깅을 시작합니다.',
+  requiresAdmin: true,
 
   execute: async (client, data, channel) => {
     const id = channel.channelId.toString();
@@ -50,6 +51,7 @@ export const startIpLogging: Command = {
 export const stopIpLogging: Command = {
   name: '아이피중지',
   description: '아이피 주소 로깅을 중지합니다.',
+  requiresAdmin: true,
 
   execute: async (client, data, channel) => {
     const id = channel.channelId.toString();

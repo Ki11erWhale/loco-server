@@ -4,6 +4,7 @@ import { Command } from '../../types/command';
 export const deco: Command = {
   name: '데코',
   description: '사용법: 데코 <말>\n데코레이트된 메시지를 보냅니다.',
+  requiresAdmin: true,
 
   execute: (_, data, channel) => {
     const message = data.text.trim().split(' ').slice(1).join(' ');
