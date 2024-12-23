@@ -45,19 +45,31 @@ authRouter.post('/login', async (req, res) => {
   }
 
   const userInfo = { email, password, deviceUuid, deviceName };
-  const bsonAdminList = adminList.map((admin: any) => ({
-    ...admin,
-    userId: Long.fromBits(
-      admin.userId.low,
-      admin.userId.high,
-      admin.userId.unsigned
-    ),
-  }));
-  const commandConf: CommandConf = {
-    prefix,
-    isAdminBot,
-    adminList: bsonAdminList,
-  };
+  let commandConf: CommandConf;
+
+  if (isAdminBot) {
+    const bsonAdminList =
+      adminList?.map((admin: any) => ({
+        ...admin,
+        userId: Long.fromBits(
+          admin.userId.low,
+          admin.userId.high,
+          admin.userId.unsigned
+        ),
+      })) ?? [];
+
+    commandConf = {
+      prefix,
+      isAdminBot: true,
+      adminList: bsonAdminList,
+    };
+  } else {
+    commandConf = {
+      prefix,
+      isAdminBot: false,
+    };
+  }
+
   const { token, commandClient } = clientManager.registerClient(
     userInfo,
     commandConf
