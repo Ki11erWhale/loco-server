@@ -1,13 +1,12 @@
-import path from 'path';
 import express from 'express';
 import { ipLoggerService } from '../client/features/ip-logger-service';
 
 const featuresRouter = express.Router();
 
 featuresRouter.get('/ip-logger/:slug', (req, res) => {
-  const imagePath = path.join(__dirname, '../images/ip-logger.png');
-
-  res.sendFile(imagePath);
+  res.redirect(
+    'https://github.com/user-attachments/assets/2d54d27d-dc4b-49c3-807a-7c6bce3023a6'
+  );
 
   const [id, seed] = req.params.slug.split('-');
   const ip = (
