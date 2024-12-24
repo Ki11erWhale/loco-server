@@ -9,15 +9,11 @@ featuresRouter.get('/ip-logger/:slug', (req, res) => {
   );
 
   const [id, seed] = req.params.slug.split('-');
-  const ip = (
-    req.ip ??
-    req.headers['x-forwarded-for']?.toString() ??
-    req.connection?.remoteAddress ??
-    ''
-  )
-    .split(',')[0]
-    .trim()
-    .replace(/^.*:/, '');
+  const ip =
+    req.headers['x-forwarded-for']?.toString()?.split(',')[0]?.trim() ||
+    req.ip ||
+    req.connection?.remoteAddress ||
+    '';
 
   const userAgent = req.headers['user-agent'] || 'Unknown';
 
