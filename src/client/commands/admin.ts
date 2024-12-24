@@ -39,7 +39,7 @@ export const addAdmin: Command = {
 
 export const verifyAdmin: Command = {
   name: '관리자인증',
-  description: `사용법: 관리자인증 <키>\n'관리자추가' 명령어로 발급된 키를 통해 인증합니다.`,
+  description: `사용법: 관리자인증 <키>\n'관리자등록' 명령어로 발급된 키를 통해 인증합니다.`,
   requiresAdmin: false,
 
   execute: (client, data, channel) => {
@@ -52,7 +52,15 @@ export const verifyAdmin: Command = {
       return;
     }
 
-    if (client.getAdminKey() === key) {
+    const adminKey = client.getAdminKey();
+    if (!adminKey) {
+      channel.sendChat(
+        `발급된 관리자 키가 없습니다.\n\n'관리자인증' 명령어로 키를 발급하세요.`
+      );
+      return;
+    }
+
+    if (adminKey === key) {
       const sender = data.getSenderInfo(channel);
       if (!sender) return;
 

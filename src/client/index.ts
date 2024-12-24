@@ -32,6 +32,8 @@ import {
 } from './commands';
 import { readersByReaction } from './features/readers-by-reaction';
 import { DetectManager, onDetected } from './features/detect-manager';
+import { SpamManager } from './features/spam-manager';
+import { startSpamCommand, stopSpamCommand } from './commands/spam';
 
 export class CommandClient {
   private userInfo: UserInfo;
@@ -41,12 +43,14 @@ export class CommandClient {
   commandConf: CommandConf;
   client: TalkClient;
   detectManager: DetectManager;
+  spamManager: SpamManager;
 
   constructor(userInfo: UserInfo, commandConf: CommandConf) {
     this.client = new TalkClient();
     this.userInfo = userInfo;
     this.commands = [];
     this.detectManager = new DetectManager();
+    this.spamManager = new SpamManager();
     this.commandConf = commandConf;
     this.adminKey = '';
 
@@ -55,6 +59,8 @@ export class CommandClient {
     this.registerCommand(adminList);
     this.registerCommand(addAdmin);
     this.registerCommand(verifyAdmin);
+    this.registerCommand(startSpamCommand);
+    this.registerCommand(stopSpamCommand);
     this.registerCommand(clearChat);
     this.registerCommand(echo);
     this.registerCommand(info);
@@ -174,6 +180,14 @@ export class CommandClient {
 
       if (!(channel instanceof TalkNormalChannel)) return;
       if (extra.type === 0) return;
+
+      if (this.commandConf.isAdminBot) {
+        const isAdmin = this.commandConf.adminList.some((admin) =>
+          admin.userId.equals(userId)
+        );
+
+        if (!isAdmin) return;
+      }
 
       readersByReaction(this.client, channel, logId, userId);
     }
