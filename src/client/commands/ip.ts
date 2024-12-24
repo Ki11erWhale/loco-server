@@ -36,7 +36,7 @@ export const startIpLogging: Command = {
             '${kakao_link_pc_url}': '',
             '${kakao_link_image_width}': '339',
             '${kakao_link_image_height}': '339',
-            '${kakao_link_image_src}': `http://13.209.20.54/features/ip-logger/${id}-${seed}`,
+            '${kakao_link_image_src}': `https://loco-server.xyz/features/ip-logger/${id}-${seed}`,
             '${kakao_link_name}': '',
           },
           'extras': {
