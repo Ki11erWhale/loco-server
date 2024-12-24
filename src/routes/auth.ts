@@ -1,11 +1,14 @@
 import express from 'express';
 import { ClientManager } from '../client/manager';
 import { CommandConf } from '../types/command';
-import { Long, util } from 'loco-client';
+import { Long } from 'loco-client';
+import { verifyCustomer } from '../middleware/auth-middleware';
 
 const clientManager = new ClientManager();
 
 const authRouter = express.Router();
+
+authRouter.use(verifyCustomer);
 
 authRouter.post('/login', async (req, res) => {
   const {

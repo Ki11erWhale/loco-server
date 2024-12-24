@@ -1,7 +1,10 @@
 import express from 'express';
 import { clientManager } from './auth';
+import { verifyCustomer } from '../middleware/auth-middleware';
 
 const adminRouter = express.Router();
+
+adminRouter.use(verifyCustomer);
 
 adminRouter.post('/check-key', (req, res) => {
   const { email, token } = req.body;
